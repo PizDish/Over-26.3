@@ -1,4 +1,3 @@
-
 package dev.ob8y.overtune.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -12,68 +11,32 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 
-/**
- * Overtune Community Port
- * Minecraft 26.3 - Fabric
- */
+/** Client entry point for the partial 26.3 port. */
 public final class OvertuneClient implements ClientModInitializer {
-
     private static PlaybackController playback;
     private static MusicLibrary library;
 
     @Override
     public void onInitializeClient() {
-
-        final KeyMapping.Category category =
-            KeyMapping.Category.register(
-                Identifier.fromNamespaceAndPath(
-                    "overtune",
-                    "player"
-                )
-            );
-
-        final KeyMapping open =
-            KeyMappingHelper.registerKeyMapping(
-                new KeyMapping(
-                    "key.overtune.open",
-                    InputConstants.Type.KEYSYM,
-                    InputConstants.KEY_M,
-                    category
-                )
-            );
+        final KeyMapping.Category category = KeyMapping.Category.register(
+            Identifier.fromNamespaceAndPath("overtune", "player")
+        );
+        final KeyMapping open = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+            "key.overtune.open", InputConstants.Type.KEYSYM, InputConstants.KEY_M, category
+        ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-
             while (open.consumeClick()) {
                 openPlayer(client);
             }
-
-            if (playback != null) {
-                playback.tick();
-            }
+            if (playback != null) playback.tick();
         });
     }
 
     public static void openPlayer(Minecraft client) {
-
-        if (library == null) {
-            library = new MusicLibrary();
-        }
-
-        if (playback == null) {
-            playback = new PlaybackController(
-                client,
-                library
-            );
-        }
-
+        if (library == null) library = new MusicLibrary();
+        if (playback == null) playback = new PlaybackController(client, library);
         library.refresh();
-
-        client.gui.setScreen(
-            new MusicPlayerScreen(
-                playback,
-                library
-            )
-        );
+        client.gui.setScreen(new MusicPlayerScreen(playback, library));
     }
 }
