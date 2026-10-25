@@ -55,7 +55,7 @@ public final class MusicPlayerScreen extends Screen {
         int pages = Math.max(1, (library.tracks().size() + PAGE_SIZE - 1) / PAGE_SIZE);
         page = Math.floorMod(page + delta, pages);
         // Rebuild on a fresh screen to avoid manipulating widget internals.
-        this.minecraft.setScreen(this.copyPage());
+        this.minecraft.gui.setScreen(this.copyPage());
     }
 
     private MusicPlayerScreen copyPage() {
